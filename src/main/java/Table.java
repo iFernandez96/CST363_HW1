@@ -1,6 +1,7 @@
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.HashMap;
 
 /**
  * Represents a table contains rows of Instructor
@@ -9,7 +10,7 @@ import java.util.Iterator;
 public class Table implements Iterable<Instructor> {
 	
 	private ArrayList<Instructor> instructors = new ArrayList<>();
-	
+	private HashMap<Integer, Instructor> instructors_map = new HashMap<>();
 	/**
 	 * Add an instructor object to the table.
 	 * If the ID of the instructor already exists in the table, then 
@@ -19,8 +20,13 @@ public class Table implements Iterable<Instructor> {
 	 * @return whether or not the instructor object was successfully added
 	 */
 	public boolean insert(Instructor add) {
-		// TO DO complete this method
-		throw new  UnsupportedOperationException();
+		if (instructors_map.containsKey(add.getID())) {
+			return false;
+		}
+		instructors_map.put(add.getID(), add);
+		instructors.add(add);
+		return true;
+
 	}
 	
 	/**
@@ -30,8 +36,12 @@ public class Table implements Iterable<Instructor> {
 	 * @param ID the ID of the instructor to lok up
 	 */
 	public boolean delete(int ID) {
-		// TO DO complete this method
-		throw new UnsupportedOperationException();
+		if (!instructors_map.containsKey(ID)) {
+			return false;
+		}
+		instructors.remove(instructors_map.get(ID));
+		instructors_map.remove(ID);
+		return true;
 	}
 	
 	/**
@@ -40,20 +50,52 @@ public class Table implements Iterable<Instructor> {
 	 * @param ID the ID of the instructor to lok up
 	 */
 	public Instructor lookup(int ID) {
-		// TO DO complete this method
-		throw new UnsupportedOperationException();
+		if (!instructors_map.containsKey(ID)) {
+			return null;
+		}
+		return instructors_map.get(ID);
 	}
 	
 	/**
 	 * Return a Table of Instructor objects filtered by the 
 	 * predicate  attrName = value 
-	 * @param attrName can beID, name, dept_name or salary
+	 * @param attrName can be ID, name, dept_name or salary
 	 * @param value value of data type int or String
 	 * @return a table containing the objects associated with the query (0, 1, or many)
 	 */
 	public Table eval(String attrName, Object value) {
-		// TO DO complete this method
-		throw new UnsupportedOperationException();
+		Table evaluated_table = new Table();
+		switch(attrName) {
+			case "ID":
+				for (Instructor inst : instructors) {
+					if (inst.getID() == (int)value) {
+						evaluated_table.instructors.add(inst);
+					}
+				}
+				break;
+			case "name":
+				for (Instructor inst : instructors) {
+					if (inst.getName().equals(value)) {
+						evaluated_table.instructors.add(inst);
+					}
+				}
+				break;
+			case "dept_name":
+				for (Instructor inst : instructors) {
+					if (inst.getDept_name().equals(value)) {
+						evaluated_table.instructors.add(inst);
+					}
+				}
+				break;
+			case "salary":
+				for (Instructor inst : instructors) {
+					if (inst.getSalary() == (int)value) {
+						evaluated_table.instructors.add(inst);
+					}
+				}
+				break;
+		}
+		return evaluated_table;
 	}
 	
 	public Iterator<Instructor> iterator() {
